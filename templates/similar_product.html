@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Insights</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(245, 245, 240);
+            color: rgb(60, 60, 60);
+            line-height: 1.6;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgb(255, 255, 255);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: rgb(102, 51, 0); /* Dark brown */
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 2.5em;
+        }
+        h2 {
+            font-size: 1.8em;
+        }
+        .insight {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgb(245, 240, 230); /* Light tan */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .chart {
+            margin-bottom: 40px;
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 15px;
+        }
+        label {
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: rgb(85, 85, 85);
+        }
+        select, button {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: rgb(153, 76, 0); /* Burnt orange */
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        select:hover, button:hover {
+            background-color: rgb(102, 51, 0); /* Dark brown */
+        }
+        button {
+            max-width: 350px;
+            margin-top:45px;
+            margin-left: 20px; /* Adjust spacing */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgb(211, 211, 211);
+        }
+        th {
+            background-color: rgb(153, 76, 0); /* Burnt orange */
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: rgb(245, 240, 230); /* Light tan */
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: rgb(102, 51, 0); /* Dark brown */
+            color: white;
+            margin-top: 20px;
+            border-radius: 0 0 10px 10px;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin: 20px auto;
+            text-decoration: none;
+            color: #fff;
+            background-color: rgb(153, 76, 0); /* Burnt orange */
+            padding: 12px 25px;
+            border-radius: 5px;
+            width: 160px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        a:hover {
+            background-color: rgb(102, 51, 0); /* Dark brown */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            form {
+                flex-direction: column;
+                align-items: center;
+            }
+            .form-group {
+                margin: 10px 0;
+            }
+            select, button {
+                width: 80%;
+                margin: 5px 0;
+            }
+        }
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.3em;
+            }
+            table, th, td {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Product Insights by City and Gender</h1>
+        <section>
+            <h2>Select Filters</h2>
+            <form action="/similar_product" method="get">
+                <div class="form-group">
+                    <label for="product_line">Product Line:</label>
+                    <select name="product_line">
+                        <option value="None" {% if product_line == 'None' %}selected{% endif %}>None</option>
+                        <option value="Electronic accessories" {% if product_line == 'Electronic accessories' %}selected{% endif %}>Electronic accessories</option>
+                        <option value="Fashion accessories" {% if product_line == 'Fashion accessories' %}selected{% endif %}>Fashion accessories</option>
+                        <option value="Food and Beverages" {% if product_line == 'Food and Beverages' %}selected{% endif %}>Food and Beverages</option>
+                        <option value="Health and beauty" {% if product_line == 'Health and beauty' %}selected{% endif %}>Health and beauty</option>
+                        <option value="Sports and travel" {% if product_line == 'Sports and travel' %}selected{% endif %}>Sports and travel</option>
+                        <option value="Home and lifestyle" {% if product_line == 'Home and lifestyle' %}selected{% endif %}>Home and lifestyle</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="city">City:</label>
+                    <select name="city">
+                        <option value="None" {% if city == 'None' %}selected{% endif %}>None</option>
+                        <option value="Yangon" {% if city == 'Yangon' %}selected{% endif %}>Yangon</option>
+                        <option value="Naypyitaw" {% if city == 'Naypyitaw' %}selected{% endif %}>Naypyitaw</option>
+                        <option value="Mandalay" {% if city == 'Mandalay' %}selected{% endif %}>Mandalay</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="gender">Gender:</label>
+                    <select name="gender">
+                        <option value="None" {% if gender == 'None' %}selected{% endif %}>None</option>
+                        <option value="Male" {% if gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if gender == 'Female' %}selected{% endif %}>Female</option>
+                    </select>
+                </div>
+
+                <button type="submit">View Insights</button>
+            </form>
+        </section>
+        <section>
+            <h2>Product Details for {{ product_line }} in {{ city }}{% if gender != 'None' %} ({{ gender }}){% endif %}</h2>
+            {% if product_details %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Line</th>
+                            <th>City</th>
+                            <th>Gender</th>
+                            <th>Gross Income</th>
+                            <th>Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detail in product_details %}
+                        <tr>
+                            <td>{{ detail['Product line'] }}</td>
+                            <td>{{ detail['City'] }}</td>
+                            <td>{{  gender  }}</td>
+                            <td>{{ detail['gross income'] }}</td>
+                            <td>{{ detail['Rating'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No data available for the selected filters.</p>
+            {% endif %}
+        </section>
+    <a href="/">Go back</a>
+    </div>
+</body>
+</html>
